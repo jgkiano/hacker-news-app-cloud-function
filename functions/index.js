@@ -1,8 +1,22 @@
-const functions = require('firebase-functions');
+const functions = require("firebase-functions");
+const updateItem = require("./src/index");
+const runOpts = {
+	timeoutSeconds: 540,
+	memory: "1GB"
+};
 
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
+exports.updateJobs = functions
+	.region("europe-west2")
+	.runWith(runOpts)
+	.pubsub.schedule("0 */4 * * *")
+	.onRun(context => {
+		return updateItem("jobs");
+	});
+
+exports.updateStories = functions
+	.region("europe-west2")
+	.runWith(runOpts)
+	.pubsub.schedule("0 */4 * * *")
+	.onRun(context => {
+		return updateItem("stories");
+	});
